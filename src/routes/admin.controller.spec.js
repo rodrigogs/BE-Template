@@ -1,0 +1,40 @@
+const request = require('supertest')
+const app = require('../app')
+
+describe('Admin API', () => {
+  test('GET /admin/best-clients with limit 1', async () => {
+    const response = await request(app)
+      .get('/admin/best-clients')
+      .set('profile_id', 1)
+      .query({ start: '2020-08-15', end: '2020-08-17', limit: 1 })
+      .expect(200)
+    expect(response.body).toHaveLength(1)
+    expect(response.body[0].id).toBe(4)
+    expect(response.body[0].fullName).toBe('Ash Kethcum')
+    expect(response.body[0].paid).toBe(2020)
+  })
+
+  test('GET /admin/best-clients with limit 2', async () => {
+    const response = await request(app)
+      .get('/admin/best-clients')
+      .set('profile_id', 1)
+      .query({ start: '2020-08-15', end: '2020-08-17' })
+      .expect(200)
+    expect(response.body).toHaveLength(2)
+    expect(response.body[0].id).toBe(4)
+    expect(response.body[0].fullName).toBe('Ash Kethcum')
+    expect(response.body[0].paid).toBe(2020)
+    expect(response.body[1].id).toBe(2)
+    expect(response.body[1].fullName).toBe('Mr Robot')
+    expect(response.body[1].paid).toBe(321)
+  })
+
+  test('GET /admin/best-profession', async () => {
+    const response = await request(app)
+      .get('/admin/best-profession')
+      .set('profile_id', 1)
+      .query({ start: '2020-08-15', end: '2020-08-17' })
+      .expect(200)
+    expect(response.body).toEqual({ bestProfession: 'Pokemon master' })
+  })
+})
